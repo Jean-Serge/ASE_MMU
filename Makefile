@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -ansi -pedantic
+CFLAGS = -Wall -ansi -pedantic -g
 LIBDIR = ./lib
 INC = -I./include
 # Permet de linker la librairie libhardware.a
