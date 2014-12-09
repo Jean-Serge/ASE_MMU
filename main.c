@@ -4,12 +4,19 @@
 #include "mmu.h"
 #include "hardware.h"
 
+static int *tlb;
+static int current_process = 0;
+
+
 /**
  * Fonction appelée lors d'un accès illégal à la mémoire. 
  */
 void hand_mmu()
 {
-	printf("Coucou\n");
+	int page;
+	printf("MMU_IRQ déclenché\n");
+
+	printf("On sort du handler.\n");
 }
 
 /**
@@ -27,6 +34,7 @@ static int ppage_of_vaddr(int process, unsigned int vaddr)
 int main(void)
 {
 	init_hardware("hardware.ini");
+	tlb = (int *) malloc (TLB_ENTRIES * sizeof(int));
 	IRQVECTOR[MMU_IRQ] = hand_mmu;
 
 	/* ========== Test fonction ppage_of_vaddr ======== */	
@@ -34,9 +42,6 @@ int main(void)
 	assert(ppage_of_vaddr(1, 0) == 125);
 	assert(ppage_of_vaddr(0, 5000) == 2);
 	
-	_mask(0x1001);
-	IRQVECTOR[MMU_IRQ] = hand_mmu;
-
-
+	free(tlb);
 	exit(EXIT_SUCCESS);
 }
