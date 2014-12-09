@@ -7,8 +7,8 @@ LIB = -L$(LIBDIR) -lhardware
 
 
 # LIB doit être en fin de commande
-main: 
-	$(CC) $(CFLAGS) -o main.bin main.c $(INC) $(LIB) 
+main: mmu.h
+	$(CC) $(CFLAGS) -o main.bin main.c mmu.h $(INC) $(LIB) 
 
 
 .PHONY: clean

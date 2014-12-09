@@ -1,13 +1,21 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
+#include "mmu.h"
 #include "hardware.h"
 
-#define MEM_SIZE 1024*1000
-#define PAGE_SIZE 4096 /* une page fait 4ko */
-#define NB_PAGE ((MEM_SIZE / PAGE_SIZE)-1)/2 /* Nombre de page / process */
+/**
+ * Fonction appelée lors d'un accès illégal à la mémoire. 
+ */
+void hand_mmu()
+{
+	printf("Coucou\n");
+}
 
+/**
+ * Permet de récupérer la page correspondante à l'adresse virtuelle 
+ * d'un processus.
+ */
 static int ppage_of_vaddr(int process, unsigned int vaddr)
 {
 	int page = vaddr / PAGE_SIZE;
@@ -19,12 +27,16 @@ static int ppage_of_vaddr(int process, unsigned int vaddr)
 int main(void)
 {
 	init_hardware("hardware.ini");
+	IRQVECTOR[MMU_IRQ] = hand_mmu;
 
 	/* ========== Test fonction ppage_of_vaddr ======== */	
 	assert(ppage_of_vaddr(0, 0) == 1);
 	assert(ppage_of_vaddr(1, 0) == 125);
 	assert(ppage_of_vaddr(0, 5000) == 2);
-/*	assert(ppage_of_vaddr(1, 0) == 125); */
 	
+	_mask(0x1001);
+	IRQVECTOR[MMU_IRQ] = hand_mmu;
+
+
 	exit(EXIT_SUCCESS);
 }
